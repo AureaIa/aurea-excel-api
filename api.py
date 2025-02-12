@@ -20,3 +20,12 @@ def generate():
     return send_file(file_path, as_attachment=True)
 
 # No ejecutamos Flask con app.run() en producción
+
+@app.route('/routes', methods=['GET'])
+def list_routes():
+    import urllib
+    output = []
+    for rule in app.url_map.iter_rules():
+        methods = ','.join(rule.methods)
+        output.append(f"{rule.endpoint}: {rule.rule} [{methods}]")
+    return '<br>'.join(output)
