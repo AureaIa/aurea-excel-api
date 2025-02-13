@@ -1,8 +1,10 @@
 from flask import Flask, request, send_file
+from flask_cors import CORS
 import os
 from excel_generator import generate_excel
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/generate_excel', methods=['POST'])
 def generate():
@@ -14,7 +16,8 @@ def generate():
     file_path = os.path.join(os.getcwd(), filename)
 
     # Generar el archivo Excel
-    generate_excel(data, filename=filename)
+    generate_exceldf = pd.DataFrame(data if isinstance(data, list) else [data])
+
 
     # Enviar el archivo al usuario
     return send_file(file_path, as_attachment=True)
@@ -29,3 +32,5 @@ def list_routes():
         methods = ','.join(rule.methods)
         output.append(f"{rule.endpoint}: {rule.rule} [{methods}]")
     return '<br>'.join(output)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000, debug=True)
